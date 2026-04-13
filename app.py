@@ -87,13 +87,14 @@ def is_medical_response(description: str) -> bool:
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse("index.html", page_context(request))
+    return templates.TemplateResponse(request, "index.html", page_context(request))
 
 
 @app.post("/", response_class=HTMLResponse)
 async def analyze_image(request: Request, file: UploadFile = File(...)) -> HTMLResponse:
     if not file.filename:
         return templates.TemplateResponse(
+            request,
             "index.html",
             page_context(request, error_message="Please choose an image before submitting."),
         )
@@ -101,6 +102,7 @@ async def analyze_image(request: Request, file: UploadFile = File(...)) -> HTMLR
     mime_type = (file.content_type or "").lower()
     if mime_type not in ALLOWED_MIME_TYPES:
         return templates.TemplateResponse(
+            request,
             "index.html",
             page_context(
                 request,
@@ -113,12 +115,14 @@ async def analyze_image(request: Request, file: UploadFile = File(...)) -> HTMLR
         image_bytes = await file.read()
         if not image_bytes:
             return templates.TemplateResponse(
+                request,
                 "index.html",
                 page_context(request, error_message="The uploaded file is empty.", uploaded_filename=file.filename),
             )
 
         if len(image_bytes) > MAX_FILE_SIZE_BYTES:
             return templates.TemplateResponse(
+                request,
                 "index.html",
                 page_context(
                     request,
@@ -130,6 +134,7 @@ async def analyze_image(request: Request, file: UploadFile = File(...)) -> HTMLR
         description = generate_medical_description(image_bytes=image_bytes, mime_type=mime_type)
         if not description:
             return templates.TemplateResponse(
+                request,
                 "index.html",
                 page_context(
                     request,
@@ -140,6 +145,7 @@ async def analyze_image(request: Request, file: UploadFile = File(...)) -> HTMLR
 
         if not is_medical_response(description):
             return templates.TemplateResponse(
+                request,
                 "index.html",
                 page_context(
                     request,
@@ -149,6 +155,7 @@ async def analyze_image(request: Request, file: UploadFile = File(...)) -> HTMLR
             )
 
         return templates.TemplateResponse(
+            request,
             "index.html",
             page_context(
                 request,
@@ -159,6 +166,7 @@ async def analyze_image(request: Request, file: UploadFile = File(...)) -> HTMLR
         )
     except Exception as exc:
         return templates.TemplateResponse(
+            request,
             "index.html",
             page_context(
                 request,
