@@ -1,4 +1,7 @@
-google-generativeai
-flask
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
 python-dotenv
+google-genai
 Pillow

@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
 </head>
 <body>
     <div class="page-shell">
@@ -24,19 +24,38 @@
                 </p>
 
                 <div class="hero-chips">
-                    <span>Flask</span>
+                    <span>FastAPI</span>
                     <span>Gemini Vision</span>
                     <span>Medical Relevance Check</span>
                 </div>
             </section>
 
             <section class="panel">
-                <form method="post" enctype="multipart/form-data" class="upload-form">
+                <form method="post" enctype="multipart/form-data" class="upload-form" id="upload-form">
                     <label for="file" class="form-label">Select medical image</label>
                     <input id="file" type="file" name="file" accept=".jpg, .jpeg, .png, .jfif" required>
 
-                    <button type="submit">Generate Medical Description</button>
+                    <div class="file-meta" id="file-meta">No file selected</div>
+
+                    <div class="preview-shell" id="preview-shell" hidden>
+                        <img id="preview-image" alt="Image preview">
+                    </div>
+
+                    <button type="submit" id="submit-btn">Generate Medical Description</button>
+                    <p class="loading-hint" id="loading-hint" hidden>Analyzing image with AI model...</p>
                 </form>
+
+                {% if status_message %}
+                <p class="message status">{{ status_message }}</p>
+                {% endif %}
+
+                {% if error_message %}
+                <p class="message error">{{ error_message }}</p>
+                {% endif %}
+
+                {% if uploaded_filename %}
+                <p class="uploaded-name">Last upload: {{ uploaded_filename }}</p>
+                {% endif %}
 
                 {% if response_text %}
                 <article class="result" aria-live="polite">
@@ -47,5 +66,40 @@
             </section>
         </main>
     </div>
+
+    <script>
+        const fileInput = document.getElementById('file');
+        const fileMeta = document.getElementById('file-meta');
+        const previewShell = document.getElementById('preview-shell');
+        const previewImage = document.getElementById('preview-image');
+        const form = document.getElementById('upload-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const loadingHint = document.getElementById('loading-hint');
+
+        fileInput.addEventListener('change', (event) => {
+            const selected = event.target.files && event.target.files[0];
+            if (!selected) {
+                fileMeta.textContent = 'No file selected';
+                previewShell.hidden = true;
+                previewImage.removeAttribute('src');
+                return;
+            }
+
+            const sizeMb = (selected.size / (1024 * 1024)).toFixed(2);
+            fileMeta.textContent = `${selected.name} | ${sizeMb} MB`;
+
+            if (selected.type.startsWith('image/')) {
+                const objectUrl = URL.createObjectURL(selected);
+                previewImage.src = objectUrl;
+                previewShell.hidden = false;
+            }
+        });
+
+        form.addEventListener('submit', () => {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Generating...';
+            loadingHint.hidden = false;
+        });
+    </script>
 </body>
 </html>

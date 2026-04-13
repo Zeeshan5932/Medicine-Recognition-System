@@ -1,11 +1,12 @@
 # Medicine-Recognition-System
 
-This Flask web application utilizes Google's Generative AI models to generate detailed medical descriptions for uploaded images. The project, which focuses on medical content generation, incorporates two key models: the Pro-Vision model for in-depth medical descriptions and the Pro model for additional content generation. Upon uploading an image, the application uses the Pro-Vision model to generate comprehensive medical descriptions, ensuring clinical accuracy. Additionally, a validation step with the Pro model ensures that the context is indeed related to the medical field. The user is provided with generated content on successful validation, while the interface prompts for a valid medical image otherwise. The project's user interaction includes uploading images through a simple web form, content generation based on the uploaded images, and a validation step to ensure medical relevance. To maintain security, the application loads the required Google API key from environment variables. Further improvements could involve enhanced error handling, a more user-friendly interface, and thorough documentation for future development and maintenance.
+This FastAPI web application uses Google Gemini models to generate detailed medical descriptions from uploaded images. After upload, the backend performs file validation, generates a clinically focused description, and runs a medical relevance check before presenting results. The interface supports image preview, loading states, and clear success/error feedback. API credentials are loaded from environment variables.
 
 ## Built With
 
- - Google-GenerativeAI
- - Flask
+ - FastAPI
+ - Google GenAI
+ - Jinja2 Templates
 
 ## Getting Started
 
@@ -47,11 +48,11 @@ Follow these steps to install and run the project from source code:
 
 5. **Run the app**
    ```bash
-   python app.py
+   uvicorn app:app --reload
    ```
 
 6. **Open in browser**
-   - Go to `http://127.0.0.1:5000`.
+   - Go to `http://127.0.0.1:8000`.
 
 ### Option 2: Installation from DockerHub
 
