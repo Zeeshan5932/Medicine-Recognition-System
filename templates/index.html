@@ -4,22 +4,48 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Image Recognition App</title>
+    <title>Medicine Recognition System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Medical Image Recognition App</h1>
-    <form method="post" enctype="multipart/form-data">
-        <label for="file">Choose a medical image:</label>
-        <input type="file" name="file" accept=".jpg, .jpeg, .png" required>
-        <br>
-        <input type="submit" value="Generate Medical Description">
-    </form>
-    
-    {% if response_text %}
-        <div class="result">
-            <p>{{ response_text }}</p>
-        </div>
-    {% endif %}
+    <div class="page-shell">
+        <div class="backdrop-glow backdrop-a"></div>
+        <div class="backdrop-glow backdrop-b"></div>
+
+        <main class="layout">
+            <section class="hero">
+                <p class="kicker">AI-Assisted Clinical Image Context</p>
+                <h1>Medicine Recognition System</h1>
+                <p class="subtitle">
+                    Upload a radiology or medical image to generate a detailed, clinically-focused explanation powered by Gemini models.
+                </p>
+
+                <div class="hero-chips">
+                    <span>Flask</span>
+                    <span>Gemini Vision</span>
+                    <span>Medical Relevance Check</span>
+                </div>
+            </section>
+
+            <section class="panel">
+                <form method="post" enctype="multipart/form-data" class="upload-form">
+                    <label for="file" class="form-label">Select medical image</label>
+                    <input id="file" type="file" name="file" accept=".jpg, .jpeg, .png, .jfif" required>
+
+                    <button type="submit">Generate Medical Description</button>
+                </form>
+
+                {% if response_text %}
+                <article class="result" aria-live="polite">
+                    <h2>Generated Analysis</h2>
+                    <p>{{ response_text }}</p>
+                </article>
+                {% endif %}
+            </section>
+        </main>
+    </div>
 </body>
 </html>
