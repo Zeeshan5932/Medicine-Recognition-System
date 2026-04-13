@@ -237,11 +237,20 @@ button:hover {
     font-size: 1.3rem;
 }
 
-.result p {
+.result-text {
     margin: 0;
     line-height: 1.72;
     color: #e5f2f8;
     white-space: pre-wrap;
+    font-size: 0.98rem;
+}
+
+.result-text p {
+    margin: 0 0 10px;
+}
+
+.result-text p:last-child {
+    margin-bottom: 0;
 }
 
 @keyframes reveal {

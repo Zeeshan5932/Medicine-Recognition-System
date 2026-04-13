@@ -1,4 +1,6 @@
 import os
+import re
+import time
 from typing import Any, Dict
 
 from dotenv import load_dotenv
@@ -16,6 +18,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 MAX_FILE_SIZE_BYTES = 8 * 1024 * 1024
+PRIMARY_MODEL = "gemini-3-flash-preview"
+FALLBACK_MODEL = "gemini-2.5-flash"
 ALLOWED_MIME_TYPES = {
     "image/jpeg",
     "image/jpg",
@@ -40,35 +44,80 @@ def page_context(request: Request, **extra: Any) -> Dict[str, Any]:
     return base_context
 
 
-def generate_medical_description(image_bytes: bytes, mime_type: str) -> str:
+def clean_analysis_text(raw_text: str) -> str:
+    text = raw_text.strip()
+    text = text.replace("**", "")
+    text = re.sub(r"(?m)^\s*#{1,6}\s*", "", text)
+    text = re.sub(r"(?m)^\s*[•*\-]\s+", "- ", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    text = re.sub(r"[ \t]+\n", "\n", text)
+    return text.strip()
+
+
+def is_retryable_error(exc: Exception) -> bool:
+    message = str(exc).lower()
+    retryable_signals = (
+        "503",
+        "unavailable",
+        "429",
+        "resource_exhausted",
+        "deadline_exceeded",
+        "internal",
+    )
+    return any(signal in message for signal in retryable_signals)
+
+
+def generate_with_retry(*, prompt: Any, model_sequence: tuple[str, ...]) -> str:
     if client is None:
         raise RuntimeError("Missing GOOGLE_API_KEY in .env file.")
 
+    last_error: Exception | None = None
+
+    for model_name in model_sequence:
+        for attempt in range(3):
+            try:
+                response = client.models.generate_content(model=model_name, contents=prompt)
+                return clean_analysis_text(response.text or "")
+            except Exception as exc:
+                last_error = exc
+                if not is_retryable_error(exc) or attempt == 2:
+                    break
+                time.sleep(1.5 * (attempt + 1))
+
+    if last_error is not None:
+        raise RuntimeError(
+            "The AI service is busy right now. Please try again in a minute."
+        ) from last_error
+
+    raise RuntimeError("The AI service is busy right now. Please try again in a minute.")
+
+
+def generate_medical_description(image_bytes: bytes, mime_type: str) -> str:
     prompt = """
     You are a clinical imaging assistant.
     Generate a detailed, medically grounded description of the provided image.
     Include:
-    1) observed structures and findings,
-    2) possible abnormalities (if any),
-    3) cautious interpretation notes,
-    4) next-step recommendations.
+    1. Observed structures and findings
+    2. Possible abnormalities, if any
+    3. Cautious interpretation notes
+    4. Next-step recommendations
+    5. A short final summary
+    Write in plain text only.
+    Do not use markdown symbols such as #, *, or **.
+    Use clear section titles and short bullet points with hyphens only if needed.
     Avoid fabricated certainty. If uncertain, clearly state limitations.
     """
 
-    response = client.models.generate_content(
-        model="gemini-3-flash-preview",
-        contents=[
+    return generate_with_retry(
+        prompt=[
             prompt,
             types.Part.from_bytes(data=image_bytes, mime_type=mime_type),
         ],
+        model_sequence=(PRIMARY_MODEL, FALLBACK_MODEL),
     )
-    return (response.text or "").strip()
 
 
 def is_medical_response(description: str) -> bool:
-    if client is None:
-        raise RuntimeError("Missing GOOGLE_API_KEY in .env file.")
-
     validation_prompt = f"""
     Decide if this description is genuinely medical/clinical content.
     Reply with exactly one word: Yes or No.
@@ -77,11 +126,7 @@ def is_medical_response(description: str) -> bool:
     {description}
     """
 
-    result = client.models.generate_content(
-        model="gemini-3-flash-preview",
-        contents=validation_prompt,
-    )
-    answer = (result.text or "").strip().lower()
+    answer = generate_with_retry(prompt=validation_prompt, model_sequence=(PRIMARY_MODEL, FALLBACK_MODEL)).lower()
     return answer.startswith("yes")
 
 
