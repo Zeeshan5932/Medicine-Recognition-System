@@ -85,92 +85,62 @@ def is_medical_response(description: str) -> bool:
     return answer.startswith("yes")
 
 
+def render_index(request: Request, **extra: Any) -> HTMLResponse:
+    return templates.TemplateResponse(request, "index.html", page_context(request, **extra))
+
+
 @app.get("/", response_class=HTMLResponse)
+@app.get("/index.html", response_class=HTMLResponse)
 async def index(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request, "index.html", page_context(request))
 
 
 @app.post("/", response_class=HTMLResponse)
+@app.post("/index.html", response_class=HTMLResponse)
 async def analyze_image(request: Request, file: UploadFile = File(...)) -> HTMLResponse:
     if not file.filename:
-        return templates.TemplateResponse(
-            request,
-            "index.html",
-            page_context(request, error_message="Please choose an image before submitting."),
-        )
+        return render_index(request, error_message="Please choose an image before submitting.")
 
     mime_type = (file.content_type or "").lower()
     if mime_type not in ALLOWED_MIME_TYPES:
-        return templates.TemplateResponse(
+        return render_index(
             request,
-            "index.html",
-            page_context(
-                request,
-                error_message="Unsupported image type. Please upload JPG, JPEG, PNG, JFIF, or WEBP.",
-                uploaded_filename=file.filename,
-            ),
+            error_message="Unsupported image type. Please upload JPG, JPEG, PNG, JFIF, or WEBP.",
+            uploaded_filename=file.filename,
         )
 
     try:
         image_bytes = await file.read()
         if not image_bytes:
-            return templates.TemplateResponse(
-                request,
-                "index.html",
-                page_context(request, error_message="The uploaded file is empty.", uploaded_filename=file.filename),
-            )
+            return render_index(request, error_message="The uploaded file is empty.", uploaded_filename=file.filename)
 
         if len(image_bytes) > MAX_FILE_SIZE_BYTES:
-            return templates.TemplateResponse(
+            return render_index(
                 request,
-                "index.html",
-                page_context(
-                    request,
-                    error_message="File too large. Maximum allowed size is 8 MB.",
-                    uploaded_filename=file.filename,
-                ),
+                error_message="File too large. Maximum allowed size is 8 MB.",
+                uploaded_filename=file.filename,
             )
 
         description = generate_medical_description(image_bytes=image_bytes, mime_type=mime_type)
         if not description:
-            return templates.TemplateResponse(
+            return render_index(
                 request,
-                "index.html",
-                page_context(
-                    request,
-                    error_message="No description was generated. Please try another image.",
-                    uploaded_filename=file.filename,
-                ),
+                error_message="No description was generated. Please try another image.",
+                uploaded_filename=file.filename,
             )
 
         if not is_medical_response(description):
-            return templates.TemplateResponse(
+            return render_index(
                 request,
-                "index.html",
-                page_context(
-                    request,
-                    error_message="The image does not appear to be medical. Please upload a valid medical image.",
-                    uploaded_filename=file.filename,
-                ),
+                error_message="The image does not appear to be medical. Please upload a valid medical image.",
+                uploaded_filename=file.filename,
             )
 
-        return templates.TemplateResponse(
+        return render_index(
             request,
-            "index.html",
-            page_context(
-                request,
-                response_text=description,
-                status_message="Analysis generated successfully.",
-                uploaded_filename=file.filename,
-            ),
+            response_text=description,
+            status_message="Analysis generated successfully.",
+            uploaded_filename=file.filename,
         )
     except Exception as exc:
-        return templates.TemplateResponse(
-            request,
-            "index.html",
-            page_context(
-                request,
-                error_message=f"Could not process image: {exc}",
-                uploaded_filename=file.filename,
-            ),
-        )
+        return render_index(request, error_message=f"Could not process image: {exc}", uploaded_filename=file.filename)

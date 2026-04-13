@@ -53,6 +53,7 @@ Follow these steps to install and run the project from source code:
 
 6. **Open in browser**
    - Go to `http://127.0.0.1:8000`.
+   - Or open the frontend directly at `http://127.0.0.1:8000/index.html`.
 
 ### Option 2: Installation from DockerHub
 
@@ -77,6 +78,7 @@ If you publish or share a Docker image, users can run your app without local Pyt
 
 3. **Open in browser**
    - Go to `http://127.0.0.1:5000`.
+   - If you add the same route in your Docker image, you can also use `/index.html` there.
 
    
 ## API Key Setup
