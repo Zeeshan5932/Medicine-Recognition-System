@@ -121,7 +121,7 @@ This project is licensed under the [Open Source Initiative (OSI)](https://openso
 
 ## Contact Details
 
-Zee - [kalyanmurapaka274@gmail.com](kalyanmurapaka274@gmail.com)<br>
+Zeeshan Younas - [zeeshanoffical01@gmail.com](zeeshanoffical01@gmail.com)<br>
 
 
 ## Acknowledgements
