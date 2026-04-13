@@ -9,75 +9,73 @@ This Flask web application utilizes Google's Generative AI models to generate de
 
 ## Getting Started
 
-This will help you understand how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+Use one of the options below to run this project.
 
 ## Installation Steps
 
 ### Option 1: Installation from GitHub
 
-Follow these steps to install and set up the project directly from the GitHub repository:
+Follow these steps to install and run the project from source code:
 
-1. **Clone the Repository**
-   - Open your terminal or command prompt.
-   - Navigate to the directory where you want to install the project.
-   - Run the following command to clone the GitHub repository:
-     ```
-     git clone https://github.com/KalyanMurapaka45/--------------------.git
-     ```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Zeeshan5932/Medicine-Recognition-System.git
+   cd Medicine-Recognition-System
+   ```
 
-2. **Create a Virtual Environment** (Optional but recommended)
-   - It's a good practice to create a virtual environment to manage project dependencies. Run the following command:
+2. **Create and activate a virtual environment** (recommended)
+   - Windows (PowerShell):
+     ```powershell
+     python -m venv venv
+     .\venv\Scripts\activate
      ```
-     conda create -p <Environment_Name> python==<python version> -y
-     ```
-
-3. **Activate the Virtual Environment** (Optional)
-   - Activate the virtual environment based on your operating system:
-       ```
-       conda activate <Environment_Name>/
-       ```
-
-4. **Install Dependencies**
-   - Navigate to the project directory:
-     ```
-     cd [project_directory]
-     ```
-   - Run the following command to install project dependencies:
-     ```
-     pip install -r requirements.txt
+   - Linux/macOS:
+     ```bash
+     python3 -m venv venv
+     source venv/bin/activate
      ```
 
-5. **Run the Project**
-   - Start the project by running the appropriate command.
-     ```
-     python app.py
-     ```
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-6. **Access the Project**
-   - Open a web browser or the appropriate client to access the project.<br>
+4. **Set your API key in `.env`**
+   ```dotenv
+   GOOGLE_API_KEY=your_api_key_here
+   ```
+
+5. **Run the app**
+   ```bash
+   python app.py
+   ```
+
+6. **Open in browser**
+   - Go to `http://127.0.0.1:5000`.
 
 ### Option 2: Installation from DockerHub
 
-If you prefer to use Docker, you can install and run the project using a Docker container from DockerHub:
+If you publish or share a Docker image, users can run your app without local Python setup.
 
-1. **Pull the Docker Image**
-   - Open your terminal or command prompt.
-   - Run the following command to pull the Docker image from DockerHub:
+1. **Pull the Docker image**
+   - Example image name:
+     ```bash
+     docker pull zeeshan5932/medicine-recognition-system:latest
      ```
-     docker pull kalyan45/movierecommend-app
-     ```
-     This command downloads the Docker image from the DockerHub.
+   - Replace image name/tag if your DockerHub repo is different.
 
-2. **Run the Docker Container**
-   - Start the Docker container by running the following command. Adjust the port mapping as needed:
+2. **Run the Docker container**
+   - With API key passed directly:
+     ```bash
+     docker run --name medicine-recognition -p 5000:5000 -e GOOGLE_API_KEY=your_api_key_here zeeshan5932/medicine-recognition-system:latest
      ```
-     docker run -p 5000:5000 kalyan45/movierecommend-app
+   - Or with a local `.env` file:
+     ```bash
+     docker run --name medicine-recognition -p 5000:5000 --env-file .env zeeshan5932/medicine-recognition-system:latest
      ```
-     This command launches the project within a Docker container.
 
-3. **Access the Project**
-   - Open a web browser or the appropriate client to access the project.<br>
+3. **Open in browser**
+   - Go to `http://127.0.0.1:5000`.
 
    
 ## API Key Setup
@@ -118,12 +116,12 @@ Contributions are what make the open-source community such an amazing place to l
 
 ## License
 
-This project is licensed under the [Open Source Initiative (OSI)](https://opensource.org/) approved GNU General Public License v3.0 License - see the [LICENSE.txt](LICENSE.txt) file for details.<br>
+This project is licensed under the [Open Source Initiative (OSI)](https://opensource.org/) approved GNU General Public License v3.0 License - see the [LICENSE](LICENSE) file for details.<br>
 
 
 ## Contact Details
 
-Hema Kalyan Murapaka - [kalyanmurapaka274@gmail.com](kalyanmurapaka274@gmail.com)<br>
+Zee - [kalyanmurapaka274@gmail.com](kalyanmurapaka274@gmail.com)<br>
 
 
 ## Acknowledgements
