@@ -5,145 +5,151 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Image Analysis System</title>
-    <!-- Bootstrap 5 Added -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
 </head>
-<body class="overflow-x-hidden">
+<body>
     <div class="page-shell">
         <div class="backdrop-glow backdrop-a"></div>
         <div class="backdrop-glow backdrop-b"></div>
 
-        <!-- Bootstrap Container/Grid Added -->
-        <main class="layout container-fluid px-2 px-md-3">
-            <div class="row g-3 g-md-4 align-items-start">
-            <section class="hero col-12 col-lg-6 p-3 p-md-4">
-                <p class="kicker" data-i18n="kicker">AI-Assisted Clinical Image Context</p>
-                <h1 class="display-6 display-md-5 display-lg-4" data-i18n="title">Medical Image Analysis System</h1>
-                <p class="subtitle">
-                    Upload radiology scans, skin images, dental images, or medicine packaging to generate a detailed clinical-style analysis powered by Gemini models.
-                </p>
+        <main class="layout container-fluid px-0">
+            <div class="row g-3 g-lg-4 align-items-start">
+                <section class="hero col-12 col-lg-6">
+                    <p class="kicker" data-i18n="kicker">AI-Assisted Clinical Image Context</p>
+                    <h1 data-i18n="title">Medical Image Analysis System</h1>
+                    <p class="subtitle" data-i18n="subtitle">
+                        Upload radiology scans, skin images, dental images, or medicine packaging to generate a detailed clinical-style analysis powered by Gemini models.
+                    </p>
 
-                <div class="row g-2 mt-3 hero-chips">
-                    <div class="col-12 col-sm-auto"><span>FastAPI</span></div>
-                    <div class="col-12 col-sm-auto"><span>Gemini Vision</span></div>
-                    <div class="col-12 col-sm-auto"><span>Medical Relevance Check</span></div>
-                </div>
-            </section>
-
-            <section class="panel col-12 col-lg-6 p-3 p-md-4">
-                <div class="row g-2 align-items-center locale-switcher mb-3">
-                    <div class="col-12 col-md-auto">
-                        <label for="locale-select">Language</label>
+                    <div class="hero-chips">
+                        <span>FastAPI</span>
+                        <span>Gemini Vision</span>
+                        <span>Medical Relevance Check</span>
                     </div>
-                    <div class="col-12 col-md">
-                        <select id="locale-select" class="form-select form-select-sm" aria-label="Select language">
-                            <option value="en">English</option>
-                            <option value="ur">Urdu (beta)</option>
-                        </select>
-                    </div>
-                </div>
+                </section>
 
-                <form method="post" enctype="multipart/form-data" class="upload-form row g-3" id="upload-form">
-                    <div class="col-12">
-                        <label for="file" class="form-label" data-i18n="select_label">Select medical image</label>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="dropzone w-100 p-3 p-md-4" id="dropzone" role="button" tabindex="0" aria-label="Drop medical image here">
-                            <p data-i18n="dropzone_line_1">Drag and drop image here</p>
-                            <p class="dropzone-sep" data-i18n="dropzone_line_2">or click to browse</p>
-                            <small>JPG, JPEG, PNG, JFIF, WEBP | Max 8 MB</small>
+                <section class="panel col-12 col-lg-6">
+                    <div class="locale-switcher row g-2 align-items-center">
+                        <div class="col-12 col-sm-auto">
+                            <label for="locale-select">Language</label>
+                        </div>
+                        <div class="col-12 col-sm">
+                            <select id="locale-select" class="form-select" aria-label="Select language">
+                                <option value="en">English</option>
+                                <option value="ur">Urdu (beta)</option>
+                            </select>
                         </div>
                     </div>
 
-                    <input id="file" type="file" name="file" accept=".jpg, .jpeg, .png, .jfif, .webp" required>
-
-                    <div class="col-12">
-                        <div class="file-meta text-break" id="file-meta" style="word-break: break-all;">No file selected</div>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="preview-shell" id="preview-shell" hidden>
-                            <img id="preview-image" class="img-fluid w-100" style="height:auto; max-height:280px; object-fit:cover;" alt="Image preview">
+                    <form method="post" enctype="multipart/form-data" class="upload-form" id="upload-form">
+                        <div class="mb-3">
+                            <label for="file" class="form-label" data-i18n="select_label">Select medical image</label>
                         </div>
-                    </div>
 
-                    <div class="col-12 text-md-center">
-                        <button type="submit" id="submit-btn" class="w-100 w-md-auto" data-i18n="generate_btn">Generate Medical Description</button>
-                    </div>
-                    <div class="col-12">
-                        <p class="loading-hint mb-0" id="loading-hint" hidden data-i18n="loading">Analyzing image with AI model...</p>
-                    </div>
-                </form>
-
-                {% if status_message %}
-                <p class="message status">{{ status_message }}</p>
-                {% endif %}
-
-                {% if error_message %}
-                <p class="message error">{{ error_message }}</p>
-                {% endif %}
-
-                {% if uploaded_filename %}
-                <p class="uploaded-name">Last upload: {{ uploaded_filename }}</p>
-                {% endif %}
-
-                {% if response_text %}
-                <article class="result mt-3" aria-live="polite">
-                    <h2>Generated Analysis</h2>
-
-                    {% if analysis_result %}
-                    <div class="row g-2 result-grid">
-                        <div class="col-12 col-md-4">
-                            <div class="result-card compact h-100">
-                            <h3>Image Type</h3>
-                            <p>{{ analysis_result.image_type }}</p>
+                        <div class="mb-3">
+                            <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Drop medical image here">
+                                <p data-i18n="dropzone_line_1">Drag and drop image here</p>
+                                <p class="dropzone-sep" data-i18n="dropzone_line_2">or click to browse</p>
+                                <small>JPG, JPEG, PNG, JFIF, WEBP | Max 8 MB</small>
+                            </div>
                         </div>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <div class="result-card compact h-100">
-                            <h3>Medical Relevance</h3>
-                            <p>{{ 'Yes' if analysis_result.is_medical else 'No' }}</p>
-                        </div>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <div class="result-card compact h-100">
-                            <h3>Confidence</h3>
-                            <p>{{ (analysis_result.confidence_score * 100)|round(0) }}%</p>
-                        </div>
-                        </div>
-                    </div>
 
-                    <div class="result-card">
-                        <h3>Short Summary</h3>
-                        <p class="result-text">{{ analysis_result.short_summary }}</p>
-                    </div>
+                        <input id="file" type="file" name="file" accept=".jpg, .jpeg, .png, .jfif, .webp" required>
 
-                    <div class="result-card">
-                        <h3>Detailed Description</h3>
-                        <p class="result-text">{{ analysis_result.detailed_description }}</p>
-                    </div>
+                        <div class="mb-3">
+                            <div class="file-meta" id="file-meta">No file selected</div>
+                        </div>
 
-                    <div class="result-card warning-card">
-                        <h3>Disclaimer</h3>
-                        <p class="result-text">{{ analysis_result.warning }}</p>
-                    </div>
-                    {% else %}
-                    <div class="result-text">{{ response_text }}</div>
+                        <div class="mb-3">
+                            <div class="preview-shell" id="preview-shell" hidden>
+                                <img id="preview-image" alt="Image preview">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="submit" id="submit-btn" class="submit-btn w-100" data-i18n="generate_btn">
+                                Generate Medical Description
+                            </button>
+                        </div>
+
+                        <div class="mb-0">
+                            <p class="loading-hint" id="loading-hint" hidden data-i18n="loading">
+                                Analyzing image with AI model...
+                            </p>
+                        </div>
+                    </form>
+
+                    {% if status_message %}
+                    <p class="message status">{{ status_message }}</p>
                     {% endif %}
 
-                    <div class="row result-actions">
-                        <div class="col-12 col-md-auto ms-md-auto">
-                            <a class="secondary-btn d-block text-center" href="/index.html">Analyze another image</a>
+                    {% if error_message %}
+                    <p class="message error">{{ error_message }}</p>
+                    {% endif %}
+
+                    {% if uploaded_filename %}
+                    <p class="uploaded-name">Last upload: {{ uploaded_filename }}</p>
+                    {% endif %}
+
+                    {% if response_text %}
+                    <article class="result" aria-live="polite">
+                        <h2>Generated Analysis</h2>
+
+                        {% if analysis_result %}
+                        <div class="row g-3 result-grid">
+                            <div class="col-12 col-md-4">
+                                <div class="result-card compact h-100">
+                                    <h3>Image Type</h3>
+                                    <p>{{ analysis_result.image_type }}</p>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <div class="result-card compact h-100">
+                                    <h3>Medical Relevance</h3>
+                                    <p>{{ 'Yes' if analysis_result.is_medical else 'No' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <div class="result-card compact h-100">
+                                    <h3>Confidence</h3>
+                                    <p>{{ (analysis_result.confidence_score * 100)|round(0) }}%</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </article>
-                {% endif %}
-            </section>
+
+                        <div class="result-card">
+                            <h3>Short Summary</h3>
+                            <p class="result-text">{{ analysis_result.short_summary }}</p>
+                        </div>
+
+                        <div class="result-card">
+                            <h3>Detailed Description</h3>
+                            <p class="result-text">{{ analysis_result.detailed_description }}</p>
+                        </div>
+
+                        <div class="result-card warning-card">
+                            <h3>Disclaimer</h3>
+                            <p class="result-text">{{ analysis_result.warning }}</p>
+                        </div>
+                        {% else %}
+                        <div class="result-card">
+                            <div class="result-text">{{ response_text }}</div>
+                        </div>
+                        {% endif %}
+
+                        <div class="result-actions">
+                            <a class="secondary-btn" href="/">Analyze another image</a>
+                        </div>
+                    </article>
+                    {% endif %}
+                </section>
             </div>
         </main>
     </div>
@@ -163,6 +169,7 @@
             en: {
                 kicker: 'AI-Assisted Clinical Image Context',
                 title: 'Medical Image Analysis System',
+                subtitle: 'Upload radiology scans, skin images, dental images, or medicine packaging to generate a detailed clinical-style analysis powered by Gemini models.',
                 select_label: 'Select medical image',
                 dropzone_line_1: 'Drag and drop image here',
                 dropzone_line_2: 'or click to browse',
@@ -172,6 +179,7 @@
             ur: {
                 kicker: 'AI سے مدد یافتہ کلینیکل امیج تجزیہ',
                 title: 'میڈیکل امیج اینالیسس سسٹم',
+                subtitle: 'ریڈیولوجی اسکینز، جلد، ڈینٹل تصاویر یا میڈیسن پیکیجنگ اپ لوڈ کریں تاکہ Gemini ماڈلز کی مدد سے تفصیلی کلینیکل انداز کی تجزیاتی رپورٹ حاصل ہو۔',
                 select_label: 'میڈیکل تصویر منتخب کریں',
                 dropzone_line_1: 'تصویر یہاں ڈریگ اور ڈراپ کریں',
                 dropzone_line_2: 'یا براؤز کرنے کے لیے کلک کریں',
@@ -190,15 +198,15 @@
             });
         };
 
-        localeSelect.addEventListener('change', (event) => {
-            applyLocale(event.target.value);
-        });
+        const resetPreview = () => {
+            fileMeta.textContent = 'No file selected';
+            previewShell.hidden = true;
+            previewImage.removeAttribute('src');
+        };
 
         const updateSelectedFile = (selected) => {
             if (!selected) {
-                fileMeta.textContent = 'No file selected';
-                previewShell.hidden = true;
-                previewImage.removeAttribute('src');
+                resetPreview();
                 return;
             }
 
@@ -209,6 +217,9 @@
                 const objectUrl = URL.createObjectURL(selected);
                 previewImage.src = objectUrl;
                 previewShell.hidden = false;
+            } else {
+                previewShell.hidden = true;
+                previewImage.removeAttribute('src');
             }
         };
 
@@ -218,6 +229,7 @@
         });
 
         dropzone.addEventListener('click', () => fileInput.click());
+
         dropzone.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
@@ -241,9 +253,8 @@
 
         dropzone.addEventListener('drop', (event) => {
             const droppedFile = event.dataTransfer.files && event.dataTransfer.files[0];
-            if (!droppedFile) {
-                return;
-            }
+            if (!droppedFile) return;
+
             const dt = new DataTransfer();
             dt.items.add(droppedFile);
             fileInput.files = dt.files;
