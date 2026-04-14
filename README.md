@@ -1,12 +1,20 @@
 # Medicine-Recognition-System
 
-This FastAPI web application uses Google Gemini models to generate detailed medical descriptions from uploaded images. After upload, the backend performs file validation, generates a clinically focused description, and runs a medical relevance check before presenting results. The interface supports image preview, loading states, and clear success/error feedback. API credentials are loaded from environment variables.
+This FastAPI web application uses Google Gemini models to generate detailed medical descriptions from uploaded images. After upload, the backend validates file type/size, generates a clinically focused description, and runs a medical relevance check before presenting results. The interface supports image preview, loading states, and clear success/error feedback. API credentials are loaded from environment variables.
 
 ## Built With
 
  - FastAPI
  - Google GenAI
  - Jinja2 Templates
+
+## Features
+
+ - FastAPI backend with template rendering
+ - Frontend available on `/` and `/index.html`
+ - Image upload validation (file type + size)
+ - Cleaned report output formatting for better readability
+ - Retry + fallback model handling for temporary Gemini overload (503)
 
 ## Getting Started
 
@@ -78,7 +86,7 @@ If you publish or share a Docker image, users can run your app without local Pyt
 
 3. **Open in browser**
    - Go to `http://127.0.0.1:5000`.
-   - If you add the same route in your Docker image, you can also use `/index.html` there.
+   - If your Docker image exposes the same frontend route, you can also open `/index.html`.
 
    
 ## API Key Setup
@@ -86,7 +94,7 @@ If you publish or share a Docker image, users can run your app without local Pyt
 To use this project, you need an API key from Google Gemini Large Language Model. Follow these steps to obtain and set up your API key:
 
 1. **Get API Key:**
-   - Visit Alkali App [Click Here](https://makersuite.google.com/app/apikey).
+   - Visit Google AI Studio [Click Here](https://makersuite.google.com/app/apikey).
    - Follow the instructions to create an account and obtain your API key.
 
 2. **Set Up API Key:**
@@ -97,6 +105,27 @@ To use this project, you need an API key from Google Gemini Large Language Model
      ```
 
    **Note:** Keep your API key confidential. Do not share it publicly or expose it in your code.<br>
+
+## Troubleshooting
+
+1. **Error: 503 UNAVAILABLE (high demand)**
+   - This means Gemini is temporarily overloaded.
+   - The app already retries and falls back to another model automatically.
+   - If it still fails, wait 30 to 60 seconds and submit again.
+
+2. **Frontend is not opening**
+   - Make sure server is running with:
+     ```bash
+     uvicorn app:app --reload
+     ```
+   - Open `http://127.0.0.1:8000/index.html`.
+
+3. **API key issues**
+   - Confirm `.env` exists in project root.
+   - Confirm key variable name is exactly:
+     ```dotenv
+     GOOGLE_API_KEY=your_api_key_here
+     ```
 
 
 ## Contributing

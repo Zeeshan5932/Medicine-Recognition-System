@@ -61,10 +61,7 @@ body {
     z-index: 2;
     max-width: 1100px;
     margin: 0 auto;
-    display: grid;
-    gap: 28px;
-    grid-template-columns: 1.1fr 1fr;
-    align-items: start;
+    width: 100%;
 }
 
 .hero,
@@ -76,6 +73,7 @@ body {
     padding: 28px;
     box-shadow: 0 18px 45px rgba(0, 0, 0, 0.27);
     animation: reveal 640ms ease both;
+    min-width: 0;
 }
 
 .panel {
@@ -107,12 +105,10 @@ h1 {
 
 .hero-chips {
     margin-top: 24px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
 }
 
 .hero-chips span {
+    display: inline-block;
     padding: 7px 12px;
     border-radius: 999px;
     border: 1px solid rgba(180, 224, 244, 0.25);
@@ -122,8 +118,57 @@ h1 {
 }
 
 .upload-form {
-    display: grid;
-    gap: 14px;
+    width: 100%;
+}
+
+.locale-switcher {
+    margin-bottom: 14px;
+}
+
+.locale-switcher label {
+    font-size: 0.85rem;
+    color: #c9deea;
+}
+
+.locale-switcher select {
+    border-radius: 10px;
+    border: 1px solid rgba(180, 214, 230, 0.32);
+    background: rgba(5, 17, 26, 0.48);
+    color: #eaf6fb;
+    padding: 7px 10px;
+}
+
+.dropzone {
+    border: 1px dashed rgba(171, 214, 232, 0.45);
+    border-radius: 14px;
+    padding: 16px;
+    background: rgba(5, 17, 26, 0.32);
+    cursor: pointer;
+    transition: border-color 180ms ease, background 180ms ease;
+    width: 100%;
+}
+
+.dropzone p {
+    margin: 0;
+    color: #ddedf5;
+    font-weight: 600;
+}
+
+.dropzone-sep {
+    margin-top: 6px;
+    color: #9fc5d7;
+    font-weight: 500;
+}
+
+.dropzone small {
+    display: block;
+    margin-top: 8px;
+    color: #8fb5c8;
+}
+
+.dropzone.dragover {
+    border-color: #7fd0ff;
+    background: rgba(7, 28, 42, 0.55);
 }
 
 .file-meta {
@@ -137,6 +182,7 @@ h1 {
     border-radius: 14px;
     padding: 10px;
     background: rgba(6, 21, 31, 0.5);
+    width: 100%;
 }
 
 .preview-shell img {
@@ -153,12 +199,14 @@ h1 {
 }
 
 input[type="file"] {
-    width: 100%;
-    border: 1px dashed rgba(171, 214, 232, 0.45);
-    border-radius: 14px;
-    padding: 14px;
-    background: rgba(5, 17, 26, 0.35);
-    color: var(--text-main);
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
 }
 
 input[type="file"]::file-selector-button {
@@ -198,6 +246,58 @@ button:hover {
     padding-top: 22px;
     border-top: 1px solid rgba(180, 214, 230, 0.25);
     animation: reveal 520ms ease both;
+    width: 100%;
+}
+
+.result-grid {
+    margin-bottom: 12px;
+}
+
+.result-card {
+    background: rgba(8, 28, 41, 0.58);
+    border: 1px solid rgba(172, 213, 231, 0.22);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    min-width: 0;
+}
+
+.result-card.compact {
+    margin-bottom: 0;
+}
+
+.result-card h3 {
+    margin: 0 0 7px;
+    font-size: 0.9rem;
+    color: #b8d9e8;
+}
+
+.result-card p {
+    margin: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.warning-card {
+    border-color: rgba(255, 184, 123, 0.35);
+    background: rgba(61, 39, 14, 0.35);
+}
+
+.result-actions {
+    margin-top: 4px;
+}
+
+.secondary-btn {
+    text-decoration: none;
+    border-radius: 10px;
+    border: 1px solid rgba(180, 214, 230, 0.32);
+    padding: 8px 11px;
+    color: #dcedf6;
+    background: rgba(9, 29, 42, 0.6);
+}
+
+.secondary-btn:hover {
+    background: rgba(16, 41, 57, 0.8);
 }
 
 .message {
@@ -243,6 +343,8 @@ button:hover {
     color: #e5f2f8;
     white-space: pre-wrap;
     font-size: 0.98rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .result-text p {
@@ -265,16 +367,82 @@ button:hover {
 }
 
 @media (max-width: 920px) {
-    .layout {
-        grid-template-columns: 1fr;
-    }
-
     .hero,
     .panel {
-        padding: 22px;
+        padding: 20px;
     }
 
     .page-shell {
-        padding: 18px 14px 24px;
+        padding: 16px 12px 22px;
+    }
+
+    .dropzone {
+        padding: 14px;
+    }
+
+    .preview-shell img {
+        max-height: 220px;
+    }
+
+    .result-card {
+        padding: 11px;
+    }
+
+    .result-text {
+        font-size: 0.95rem;
+        line-height: 1.66;
+    }
+}
+
+@media (max-width: 1024px) {
+    .secondary-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .hero,
+    .panel {
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    h1 {
+        font-size: clamp(1.6rem, 9vw, 2.2rem);
+        line-height: 1.15;
+    }
+
+    .subtitle {
+        font-size: 0.95rem;
+    }
+
+    .hero-chips span {
+        font-size: 0.78rem;
+        padding: 6px 10px;
+    }
+
+    .dropzone {
+        padding: 12px;
+    }
+
+    .dropzone p {
+        font-size: 0.93rem;
+    }
+
+    .preview-shell img {
+        max-height: 180px;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .result h2 {
+        font-size: 1.12rem;
+    }
+
+    .result-card {
+        padding: 10px;
     }
 }
