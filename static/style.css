@@ -11,16 +11,26 @@
     --panel-border: rgba(180, 214, 230, 0.25);
 }
 
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
+html,
 body {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
     min-height: 100vh;
     color: var(--text-main);
     font-family: 'Space Grotesk', sans-serif;
-    background: radial-gradient(circle at 15% 15%, #1f5b79 0%, transparent 42%),
+    background:
+        radial-gradient(circle at 15% 15%, #1f5b79 0%, transparent 42%),
         radial-gradient(circle at 85% 20%, #1f7a72 0%, transparent 36%),
         linear-gradient(160deg, var(--bg-deep), var(--bg-mid) 55%, var(--bg-soft));
 }
@@ -28,8 +38,8 @@ body {
 .page-shell {
     position: relative;
     min-height: 100vh;
-    overflow: hidden;
-    padding: 32px 20px;
+    overflow-x: hidden;
+    padding: 20px 12px 28px;
 }
 
 .backdrop-glow {
@@ -59,7 +69,7 @@ body {
 .layout {
     position: relative;
     z-index: 2;
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
     width: 100%;
 }
@@ -70,10 +80,11 @@ body {
     background: var(--panel);
     backdrop-filter: blur(10px);
     border-radius: 22px;
-    padding: 28px;
+    padding: 24px;
     box-shadow: 0 18px 45px rgba(0, 0, 0, 0.27);
     animation: reveal 640ms ease both;
     min-width: 0;
+    width: 100%;
 }
 
 .panel {
@@ -92,23 +103,28 @@ body {
 h1 {
     margin: 10px 0 14px;
     font-family: 'IBM Plex Serif', serif;
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    line-height: 1.05;
+    font-size: clamp(1.9rem, 4vw, 3.2rem);
+    line-height: 1.08;
+    overflow-wrap: anywhere;
 }
 
 .subtitle {
     margin: 0;
     color: var(--text-dim);
-    line-height: 1.65;
+    line-height: 1.7;
     max-width: 60ch;
 }
 
 .hero-chips {
     margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .hero-chips span {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     padding: 7px 12px;
     border-radius: 999px;
     border: 1px solid rgba(180, 224, 244, 0.25);
@@ -122,59 +138,75 @@ h1 {
 }
 
 .locale-switcher {
-    margin-bottom: 14px;
+    margin-bottom: 18px;
 }
 
 .locale-switcher label {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #c9deea;
+    font-weight: 600;
 }
 
-.locale-switcher select {
+.locale-switcher .form-select {
     border-radius: 10px;
     border: 1px solid rgba(180, 214, 230, 0.32);
     background: rgba(5, 17, 26, 0.48);
     color: #eaf6fb;
-    padding: 7px 10px;
+    min-height: 44px;
+}
+
+.locale-switcher .form-select:focus {
+    border-color: rgba(127, 208, 255, 0.55);
+    box-shadow: 0 0 0 0.2rem rgba(127, 208, 255, 0.12);
 }
 
 .dropzone {
     border: 1px dashed rgba(171, 214, 232, 0.45);
     border-radius: 14px;
-    padding: 16px;
+    padding: 18px 16px;
     background: rgba(5, 17, 26, 0.32);
     cursor: pointer;
-    transition: border-color 180ms ease, background 180ms ease;
+    transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
     width: 100%;
+}
+
+.dropzone:hover {
+    border-color: #8fd9ff;
+    background: rgba(7, 28, 42, 0.5);
 }
 
 .dropzone p {
     margin: 0;
     color: #ddedf5;
     font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
 .dropzone-sep {
-    margin-top: 6px;
-    color: #9fc5d7;
-    font-weight: 500;
+    margin-top: 6px !important;
+    color: #9fc5d7 !important;
+    font-weight: 500 !important;
 }
 
 .dropzone small {
     display: block;
     margin-top: 8px;
     color: #8fb5c8;
+    overflow-wrap: anywhere;
 }
 
 .dropzone.dragover {
     border-color: #7fd0ff;
     background: rgba(7, 28, 42, 0.55);
+    transform: scale(0.995);
 }
 
 .file-meta {
     color: #c0dceb;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     min-height: 1.2rem;
+    word-break: break-all;
+    overflow-wrap: anywhere;
 }
 
 .preview-shell {
@@ -183,19 +215,23 @@ h1 {
     padding: 10px;
     background: rgba(6, 21, 31, 0.5);
     width: 100%;
+    overflow: hidden;
 }
 
 .preview-shell img {
     width: 100%;
-    max-height: 260px;
-    object-fit: cover;
+    height: auto;
+    max-height: 320px;
+    object-fit: contain;
     border-radius: 10px;
     display: block;
+    background: rgba(0, 0, 0, 0.15);
 }
 
 .form-label {
     font-weight: 600;
     color: #d5e8f3;
+    margin-bottom: 0;
 }
 
 input[type="file"] {
@@ -209,17 +245,7 @@ input[type="file"] {
     border: 0;
 }
 
-input[type="file"]::file-selector-button {
-    border: none;
-    margin-right: 12px;
-    padding: 10px 14px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.14);
-    color: #ffffff;
-    cursor: pointer;
-    font-weight: 600;
-}
-
+.submit-btn,
 button {
     border: none;
     border-radius: 12px;
@@ -228,76 +254,20 @@ button {
     color: #1f130d;
     background: linear-gradient(140deg, var(--accent), var(--accent-strong));
     cursor: pointer;
-    transition: transform 180ms ease, box-shadow 180ms ease;
+    transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+    min-height: 48px;
 }
 
-button:disabled {
+button:disabled,
+.submit-btn:disabled {
     opacity: 0.72;
     cursor: not-allowed;
 }
 
-button:hover {
+button:hover,
+.submit-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 12px 22px rgba(255, 123, 61, 0.3);
-}
-
-.result {
-    margin-top: 22px;
-    padding-top: 22px;
-    border-top: 1px solid rgba(180, 214, 230, 0.25);
-    animation: reveal 520ms ease both;
-    width: 100%;
-}
-
-.result-grid {
-    margin-bottom: 12px;
-}
-
-.result-card {
-    background: rgba(8, 28, 41, 0.58);
-    border: 1px solid rgba(172, 213, 231, 0.22);
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 12px;
-    min-width: 0;
-}
-
-.result-card.compact {
-    margin-bottom: 0;
-}
-
-.result-card h3 {
-    margin: 0 0 7px;
-    font-size: 0.9rem;
-    color: #b8d9e8;
-}
-
-.result-card p {
-    margin: 0;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
-
-.warning-card {
-    border-color: rgba(255, 184, 123, 0.35);
-    background: rgba(61, 39, 14, 0.35);
-}
-
-.result-actions {
-    margin-top: 4px;
-}
-
-.secondary-btn {
-    text-decoration: none;
-    border-radius: 10px;
-    border: 1px solid rgba(180, 214, 230, 0.32);
-    padding: 8px 11px;
-    color: #dcedf6;
-    background: rgba(9, 29, 42, 0.6);
-}
-
-.secondary-btn:hover {
-    background: rgba(16, 41, 57, 0.8);
 }
 
 .message {
@@ -305,6 +275,7 @@ button:hover {
     border-radius: 12px;
     padding: 10px 12px;
     font-size: 0.93rem;
+    overflow-wrap: anywhere;
 }
 
 .message.status {
@@ -323,6 +294,7 @@ button:hover {
     margin: 12px 0 0;
     color: #abcddd;
     font-size: 0.88rem;
+    overflow-wrap: anywhere;
 }
 
 .loading-hint {
@@ -331,10 +303,54 @@ button:hover {
     color: #ffe0cc;
 }
 
+.result {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(180, 214, 230, 0.25);
+    animation: reveal 520ms ease both;
+    width: 100%;
+}
+
 .result h2 {
-    margin: 0 0 10px;
+    margin: 0 0 14px;
     font-family: 'IBM Plex Serif', serif;
     font-size: 1.3rem;
+    overflow-wrap: anywhere;
+}
+
+.result-grid {
+    margin-bottom: 12px;
+}
+
+.result-card {
+    background: rgba(8, 28, 41, 0.58);
+    border: 1px solid rgba(172, 213, 231, 0.22);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    min-width: 0;
+    width: 100%;
+}
+
+.result-card.compact {
+    margin-bottom: 0;
+}
+
+.result-card h3 {
+    margin: 0 0 7px;
+    font-size: 0.92rem;
+    color: #b8d9e8;
+}
+
+.result-card p {
+    margin: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.warning-card {
+    border-color: rgba(255, 184, 123, 0.35);
+    background: rgba(61, 39, 14, 0.35);
 }
 
 .result-text {
@@ -355,6 +371,29 @@ button:hover {
     margin-bottom: 0;
 }
 
+.result-actions {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.secondary-btn {
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 10px;
+    border: 1px solid rgba(180, 214, 230, 0.32);
+    padding: 10px 14px;
+    color: #dcedf6;
+    background: rgba(9, 29, 42, 0.6);
+    text-align: center;
+    transition: background 180ms ease, border-color 180ms ease;
+}
+
+.secondary-btn:hover {
+    background: rgba(16, 41, 57, 0.8);
+    border-color: rgba(180, 214, 230, 0.46);
+}
+
 @keyframes reveal {
     from {
         transform: translateY(14px);
@@ -366,55 +405,39 @@ button:hover {
     }
 }
 
-@media (max-width: 920px) {
+@media (max-width: 991.98px) {
+    .page-shell {
+        padding: 16px 10px 24px;
+    }
+
     .hero,
     .panel {
         padding: 20px;
     }
 
-    .page-shell {
-        padding: 16px 12px 22px;
-    }
-
-    .dropzone {
-        padding: 14px;
-    }
-
     .preview-shell img {
-        max-height: 220px;
-    }
-
-    .result-card {
-        padding: 11px;
-    }
-
-    .result-text {
-        font-size: 0.95rem;
-        line-height: 1.66;
+        max-height: 280px;
     }
 }
 
-@media (max-width: 1024px) {
-    .secondary-btn {
-        width: 100%;
-        text-align: center;
-    }
-}
-
-@media (max-width: 640px) {
+@media (max-width: 767.98px) {
     .hero,
     .panel {
-        border-radius: 16px;
-        padding: 16px;
+        border-radius: 18px;
+        padding: 18px;
     }
 
     h1 {
-        font-size: clamp(1.6rem, 9vw, 2.2rem);
-        line-height: 1.15;
+        font-size: clamp(1.65rem, 8vw, 2.35rem);
+        line-height: 1.14;
     }
 
     .subtitle {
-        font-size: 0.95rem;
+        font-size: 0.96rem;
+    }
+
+    .hero-chips {
+        gap: 8px;
     }
 
     .hero-chips span {
@@ -423,19 +446,15 @@ button:hover {
     }
 
     .dropzone {
-        padding: 12px;
+        padding: 14px 12px;
     }
 
     .dropzone p {
-        font-size: 0.93rem;
+        font-size: 0.95rem;
     }
 
     .preview-shell img {
-        max-height: 180px;
-    }
-
-    button {
-        width: 100%;
+        max-height: 220px;
     }
 
     .result h2 {
@@ -443,6 +462,46 @@ button:hover {
     }
 
     .result-card {
-        padding: 10px;
+        padding: 12px;
+    }
+
+    .result-actions {
+        justify-content: stretch;
+    }
+
+    .secondary-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .page-shell {
+        padding: 12px 8px 20px;
+    }
+
+    .hero,
+    .panel {
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .locale-switcher {
+        margin-bottom: 16px;
+    }
+
+    .locale-switcher .form-select {
+        min-height: 42px;
+        font-size: 0.95rem;
+    }
+
+    .preview-shell img {
+        max-height: 180px;
+    }
+
+    .file-meta,
+    .uploaded-name,
+    .message,
+    .result-text {
+        font-size: 0.92rem;
     }
 }
